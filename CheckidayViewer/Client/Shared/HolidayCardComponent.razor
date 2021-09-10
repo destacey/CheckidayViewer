@@ -1,0 +1,42 @@
+﻿
+<MudCard Elevation="25" Class="rounded-lg pb-4">
+    <MudCardMedia Image="@Holiday.ImageUrl" Height="200" />
+    @if (!HideDetails)
+    {
+        <MudCardContent>
+            <MudText Typo="Typo.h5">@Holiday.Name</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Link="@Holiday.Url"
+                       Target="_blank"
+                       Variant="Variant.Text"
+                       Color="Color.Primary">
+                Learn More
+            </MudButton>
+        </MudCardActions>
+    }
+    else
+    {
+        <MudCardActions>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Primary"
+                       OnClick="ShowDetails">
+                Click to Reveal
+            </MudButton>
+        </MudCardActions>
+    }
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public Holiday Holiday { get; set; }
+
+    [Parameter]
+    public bool HideDetails { get; set; } = false;
+
+    private void ShowDetails()
+    {
+        HideDetails = false;
+    }
+}

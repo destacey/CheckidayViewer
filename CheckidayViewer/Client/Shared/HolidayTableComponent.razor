@@ -1,0 +1,54 @@
+﻿<MudTable T="Holiday"
+          Items="Holidays"
+          Height="800px"
+          FixedHeader="true"
+          Virtualize="true"
+          Hover="true" Bordered="true" Striped="true"
+          Filter="new Func<Holiday,bool>(FilterFunc)" @bind-SelectedItem="_selectedHoliday">
+
+    <ToolBarContent>
+        <MudToolBarSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>Image</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Holiday, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh>Url</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="Image" Style="width:200px;" >
+            <MudCardMedia Image="@context.ImageUrl" Height="150" />
+        </MudTd>
+        <MudTd DataLabel="Name">
+            <MudText Typo="Typo.h4">@context.Name</MudText>            
+        </MudTd>
+        <MudTd DataLabel="Url" Style="text-align:center">
+            <a href="@context.Url" target="_blank">
+                <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" />
+            </a>
+        </MudTd>        
+    </RowTemplate>
+</MudTable>
+
+@code {
+
+    [Parameter]
+    public List<Holiday> Holidays { get; set; } = new List<Holiday>();
+
+    Holiday? _selectedHoliday = null;
+    string _searchString = "";
+
+
+    private bool FilterFunc(Holiday holiday)
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+        if (holiday.Name != null && holiday.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+}

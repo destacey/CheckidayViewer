@@ -1,0 +1,50 @@
+﻿@page "/"
+
+@inject NavigationManager NavigationManager
+
+<MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Welcome to the Checkiday Viewer</MudText>
+
+<MudContainer Class="mt-16">
+    <MudText Align="Align.Center">Select your desired viewer.</MudText>
+    <MudGrid Class="mt-8">
+        <MudItem xs="12" sm="12" md="4">
+            <HolidayViewerComponent Title="Grid"
+                                    ViewerIcon="@Icons.Material.Filled.GridView"
+                                    Description="View today's holidays in a grid layout."
+                                    ViewerOnClickCallback="NavigateToGridViewer">
+            </HolidayViewerComponent>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="4">
+            <HolidayViewerComponent Title="Table"
+                                    ViewerIcon="@Icons.Material.Filled.TableRows"
+                                    Description="View today's holidays in a table layout."
+                                    ViewerOnClickCallback="NavigateToTableViewer">
+            </HolidayViewerComponent>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="4">
+            <HolidayViewerComponent Title="Mystery"
+                                    ViewerIcon="@Icons.Material.Filled.LiveHelp"
+                                    Description="Guess the holiday based on an image."
+                                    ViewerOnClickCallback="NavigateToMysteryGridViewer">
+            </HolidayViewerComponent>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+
+    private void NavigateToGridViewer()
+    {
+        NavigationManager.NavigateTo($"HolidayViewer/{(int)ViewerType.Grid}");
+    }
+
+    private void NavigateToTableViewer()
+    {
+        NavigationManager.NavigateTo($"HolidayViewer/{(int)ViewerType.Table}");
+    }
+
+    private void NavigateToMysteryGridViewer()
+    {
+        NavigationManager.NavigateTo($"HolidayViewer/{(int)ViewerType.MysteryGrid}");
+    }
+}

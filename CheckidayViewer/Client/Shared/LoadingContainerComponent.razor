@@ -1,0 +1,27 @@
+﻿@if (State == LoadingState.Loading)
+{
+    @LoadingContent
+}
+else if (State == LoadingState.Loaded)
+{
+    @LoadedContent
+}
+else if (State == LoadingState.Error)
+{
+    @ErrorContent
+}
+
+
+@code {
+    [Parameter]
+    public LoadingState State { get; set; }
+
+    [Parameter]
+    public RenderFragment LoadingContent { get; set; }
+
+    [Parameter]
+    public RenderFragment LoadedContent { get; set; }
+
+    [Parameter]
+    public RenderFragment ErrorContent { get; set; }
+}

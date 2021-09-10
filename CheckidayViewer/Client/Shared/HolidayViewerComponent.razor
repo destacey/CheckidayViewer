@@ -1,0 +1,38 @@
+﻿<MudCard Elevation="25" Class="rounded-lg pb-4">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h3" Align="Align.Center">@Title</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <div class="d-flex justify-center">
+            <MudIcon Icon="@ViewerIcon" Style="font-size: 8rem;" />
+        </div>
+        <div class="d-flex justify-center">
+            <MudText Typo="Typo.h6" Align="Align.Center">@Description</MudText>
+        </div>
+    </MudCardContent>
+    <MudCardActions Class="d-flex justify-center">
+        <MudButton @onclick="NavigateTo" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Style="width:50%;">Select</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string ViewerIcon { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ViewerOnClickCallback { get; set; }
+
+    private async Task NavigateTo()
+    {
+        await ViewerOnClickCallback.InvokeAsync();
+    }
+
+}

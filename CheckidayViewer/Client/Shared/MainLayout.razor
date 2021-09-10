@@ -1,0 +1,99 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_currentTheme" />
+<MudDialogProvider FullWidth="true" MaxWidth="MaxWidth.Medium" Position="DialogPosition.Center" />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="25">
+        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+            <MudIconButton Link="/" Icon="@Icons.Material.Filled.Home" aria-label="home"></MudIconButton>
+            <MudText Typo="Typo.h5" Class="mudblazor-appbar-brand-text">Checkiday Viewer</MudText>
+        </MudHidden>
+        <MudSpacer />
+
+        <MudSpacer />
+        <MudHidden Breakpoint="Breakpoint.MdAndUp" Invert="true">
+            <MudTooltip Text="Toggle light/dark theme">
+                <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => LightMode())" />
+            </MudTooltip>
+        </MudHidden>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+            <MudMenu Icon="@Icons.Filled.Settings" Color="Color.Inherit" Dense="true" Direction="Direction.Right" OffsetY="true">
+                <div class="px-2">
+                    <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => LightMode())" />
+                </div>
+            </MudMenu>
+        </MudHidden>
+    </MudAppBar>
+
+    <MudMainContent Class="mudblazor-main-content mb-16">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-3">
+            @Body
+        </MudContainer>
+
+        <MudScrollToTop TopOffset="400">
+            <MudFab Icon="@Icons.Material.Filled.KeyboardArrowUp" Color="Color.Primary" />
+        </MudScrollToTop>
+    </MudMainContent>
+
+</MudLayout>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        _currentTheme = _darkTheme;
+
+    }
+
+    #region Theme
+
+    private void LightMode()
+    {
+        if (_currentTheme == _darkTheme)
+        {
+            _currentTheme = _lightTheme;
+        }
+        else
+        {
+            _currentTheme = _darkTheme;
+        }
+    }
+
+    private MudTheme _currentTheme = new MudTheme();
+
+    private readonly MudTheme _lightTheme =
+        new MudTheme()
+        {
+            Palette = new Palette()
+            {
+                Black = "#272c34"
+            }
+        };
+
+    private readonly MudTheme _darkTheme =
+        new MudTheme()
+        {
+            Palette = new Palette()
+            {
+                Black = "#27272f",
+                Background = "#32333d",
+                BackgroundGrey = "#27272f",
+                Surface = "#373740",
+                DrawerBackground = "#27272f",
+                DrawerText = "rgba(255,255,255, 0.50)",
+                AppbarBackground = "#27272f",
+                AppbarText = "rgba(255,255,255, 0.70)",
+                TextPrimary = "rgba(255,255,255, 0.70)",
+                TextSecondary = "rgba(255,255,255, 0.50)",
+                ActionDefault = "#adadb1",
+                ActionDisabled = "rgba(255,255,255, 0.26)",
+                ActionDisabledBackground = "rgba(255,255,255, 0.12)",
+                DrawerIcon = "rgba(255,255,255, 0.50)"
+            }
+        };
+
+    #endregion
+
+}

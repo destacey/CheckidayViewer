@@ -1,0 +1,85 @@
+﻿@page "/HolidayViewer/{ViewerTypeId:int}"
+
+@using System.Net.Http.Json
+@inject HttpClient httpClient
+
+<MudContainer Class="mt-16">
+    <LoadingContainerComponent State="_loadingState">
+        <LoadingContent>
+            <LoadingContentComponent Message="Please wait while we look up today's holidays."></LoadingContentComponent>
+        </LoadingContent>
+        <LoadedContent>
+            <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Holidays for @_holidayDate.ToString("MMM dd, yyyy") (@_count)</MudText>
+            <MudGrid Class="mt-8">
+                @switch (_viewerType)
+                {
+                    case ViewerType.Table:
+                        <MudItem xs="12" Class="text-center">
+                            <HolidayTableComponent Holidays="_holidays"></HolidayTableComponent>
+                        </MudItem>
+                        break;
+                    case ViewerType.MysteryGrid:
+                        @foreach (var holiday in _holidays)
+                        {
+                            <MudItem xs="12" sm="12" md="3">
+                                <HolidayCardComponent Holiday="holiday" HideDetails="true"></HolidayCardComponent>
+                            </MudItem>
+                        }
+                        break;
+                    case ViewerType.Grid:
+                    default:
+                        @foreach (var holiday in _holidays)
+                        {
+                            <MudItem xs="12" sm="12" md="3">
+                                <HolidayCardComponent Holiday="holiday"></HolidayCardComponent>
+                            </MudItem>
+                        }
+                        break;
+                }
+            </MudGrid>
+        </LoadedContent>
+        <ErrorContent>
+            <MudText Typo="Typo.h6" Align="Align.Center" GutterBottom="true">Whoops...something went wrong.</MudText>
+            <MudText Typo="Typo.h6" Align="Align.Center" GutterBottom="true">@_errorMessage</MudText>
+        </ErrorContent>
+    </LoadingContainerComponent>
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public int ViewerTypeId { get; set; }
+
+    ViewerType _viewerType => (ViewerType)ViewerTypeId;
+
+
+    LoadingState _loadingState = LoadingState.Loading;
+    string _errorMessage = string.Empty;
+
+    DateTime _holidayDate = DateTime.Now.Date;
+    int _count = 0;
+    List<Holiday> _holidays = new List<Holiday>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loadingState = LoadingState.Loading;
+
+        try
+        {
+            var date = DateTime.Now.Date.ToString("yyyy-MM-dd");
+            var result = await httpClient.GetFromJsonAsync<HolidayListResult>($"api/holidays/{date}");
+            _holidayDate = result.Date;
+            _count = result.Count;
+            _holidays = result.Holidays;
+
+            //throw new ArgumentException("Parameter cannot be null", nameof(date));
+
+            _loadingState = LoadingState.Loaded;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.ToString();
+            _loadingState = LoadingState.Error;
+        }
+    }
+}
