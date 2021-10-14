@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -24,7 +23,6 @@ namespace CheckidayViewer.Server.Controllers
             _checkidaySettingsOptions = checkidaySettingsOptions.Value;
         }
 
-
         // GET: api/holidays/2021-09-08
         [HttpGet("{date}")]
         public async Task<ActionResult<HolidayListResult>> GetHolidays(DateTime date)
@@ -37,20 +35,22 @@ namespace CheckidayViewer.Server.Controllers
             using (var client = new HttpClient())
             {
                 var dateString = date.ToString("MM/dd/yyyy");
-                //var uri = $"https://www.checkiday.com/api/3/?d={dateString}";
                 var uri = $"{_checkidaySettingsOptions.BaseUrl}{_checkidaySettingsOptions.DailyApiEndpoint}{dateString}";
 
                 HttpResponseMessage response = await client.GetAsync(uri);
                 response.EnsureSuccessStatusCode();
                 
                 var contentString = await response.Content.ReadAsStringAsync();
-                var checkidayApiResult = JsonConvert.DeserializeObject<CheckidayApiResult>(contentString);
+                var checkidayApiResult = JsonConvert.DeserializeObject<CheckidayEventsApiResult>(contentString);
 
-                foreach (var checkidayHoliday in checkidayApiResult.Holidays)
+                if (checkidayApiResult != null)
                 {
-                    var holiday = await EnrichHolidayDetails(checkidayHoliday);
-                    if (holiday != null)
-                        holidays.Add(holiday);
+                    foreach (var checkidayHoliday in checkidayApiResult.Events)
+                    {
+                        var holiday = await EnrichHolidayDetails(checkidayHoliday);
+                        if (holiday != null)
+                            holidays.Add(holiday);
+                    }
                 }
             }
 
@@ -58,28 +58,26 @@ namespace CheckidayViewer.Server.Controllers
             return Ok(_cache);
         }
 
-        private static async Task<Holiday?> EnrichHolidayDetails(CheckidayHoliday checkidayHoliday)
+        private async Task<Holiday?> EnrichHolidayDetails(CheckidayHoliday checkidayHoliday)
         {
             try
             {
-                var web = new HtmlAgilityPack.HtmlWeb();
-                var doc = await web.LoadFromWebAsync(checkidayHoliday.Url);
-                var contentSections = doc.DocumentNode
-                    .SelectSingleNode("//div[@class='page-content']")?
-                    .Descendants("section")
-                    .ToList();
+                using var client = new HttpClient();
 
-                if (contentSections?.Count < 2)
-                    return null;
+                var uri = _checkidaySettingsOptions.GetHolidayApiEndpoint(checkidayHoliday.Id);
+                HttpResponseMessage response = await client.GetAsync(uri);
+                response.EnsureSuccessStatusCode();
 
-                var imageSrc = contentSections[0].SelectSingleNode("//picture/img").GetAttributeValue("src", "");
+                var contentString = await response.Content.ReadAsStringAsync();
+                var holidayApiResult = JsonConvert.DeserializeObject<CheckidayEventApiResult>(contentString);
 
-                if (imageSrc == null)
-                    return null;
+                if (holidayApiResult?.Event is null) return null;
 
-                // TODO add Description, Observances
-
-                return new Holiday(checkidayHoliday.Name, checkidayHoliday.Url, imageSrc);
+                return new Holiday(holidayApiResult.Event.Name,
+                    holidayApiResult.Event.Description?.Html,
+                    holidayApiResult.Event.Url,
+                    holidayApiResult.Event.Image,
+                    holidayApiResult.Event.Small_Image);
             }
             catch (Exception ex)
             {

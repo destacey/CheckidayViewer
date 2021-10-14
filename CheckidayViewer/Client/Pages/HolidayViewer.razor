@@ -21,7 +21,7 @@
                     case ViewerType.MysteryGrid:
                         @foreach (var holiday in _holidays)
                         {
-                            <MudItem xs="12" sm="12" md="3">
+                            <MudItem xs="12" sm="12" md="6">
                                 <HolidayCardComponent Holiday="holiday" HideDetails="true"></HolidayCardComponent>
                             </MudItem>
                         }
@@ -30,7 +30,7 @@
                     default:
                         @foreach (var holiday in _holidays)
                         {
-                            <MudItem xs="12" sm="12" md="3">
+                            <MudItem xs="12" sm="12" md="6">
                                 <HolidayCardComponent Holiday="holiday"></HolidayCardComponent>
                             </MudItem>
                         }

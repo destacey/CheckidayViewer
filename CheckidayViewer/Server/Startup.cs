@@ -18,7 +18,6 @@ namespace CheckidayViewer.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.Configure<CheckidaySettingsOptions>(Configuration.GetSection(CheckidaySettingsOptions.CheckidaySettings));
 
             services.AddControllersWithViews()

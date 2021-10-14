@@ -1,11 +1,19 @@
 ﻿
 <MudCard Elevation="25" Class="rounded-lg pb-4">
-    <MudCardMedia Image="@Holiday.ImageUrl" Height="200" />
+    <MudCardMedia Image="@Holiday.ImageUrl" />
     @if (!HideDetails)
     {
-        <MudCardContent>
-            <MudText Typo="Typo.h5">@Holiday.Name</MudText>
-        </MudCardContent>
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Holiday.Name</MudText>
+        @if (Holiday.Description != null)
+        {
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="Description">
+                    @((MarkupString)Holiday.Description)
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        }
+    </MudCardContent>
         <MudCardActions>
             <MudButton Link="@Holiday.Url"
                        Target="_blank"

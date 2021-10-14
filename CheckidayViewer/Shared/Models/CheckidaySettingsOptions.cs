@@ -8,8 +8,14 @@ namespace CheckidayViewer.Shared.Models
 
         public string BaseUrl { get; set; } = string.Empty;
         public string DailyApiEndpoint { get; set; } = string.Empty;
+        public string HolidayApiEndpoint { get; set; } = string.Empty;
 
         public string TodaysApiEndpoint
             =>  $"{BaseUrl}{DailyApiEndpoint}{DateTime.Now:MM/dd/yyyy}";
+
+        public string GetHolidayApiEndpoint(string holidayId)
+        {
+            return $"{BaseUrl}{HolidayApiEndpoint}{holidayId}";
+        }
     }
 }
