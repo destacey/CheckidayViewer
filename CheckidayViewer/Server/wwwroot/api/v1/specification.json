@@ -1,0 +1,88 @@
+{
+  "x-generator": "NSwag v13.13.2.0 (NJsonSchema v10.5.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CheckidayViewer API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/Holidays/{date}": {
+      "get": {
+        "tags": [
+          "Holidays"
+        ],
+        "operationId": "Holidays_GetHolidays",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HolidayListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HolidayListResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "holidays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Holiday"
+            }
+          }
+        }
+      },
+      "Holiday": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "smallImageUrl": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

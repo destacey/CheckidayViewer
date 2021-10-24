@@ -23,6 +23,11 @@ namespace CheckidayViewer.Server
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
             services.AddRazorPages();
+
+            services.AddOpenApiDocument(configure =>
+            {
+                configure.Title = "CheckidayViewer API";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +49,9 @@ namespace CheckidayViewer.Server
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+
+            //app.UseOpenApi();  // not needed because are generating it a build time
+            app.UseSwaggerUi3(configure => configure.DocumentPath = "/api/v1/specification.json");
 
             app.UseRouting();
 

@@ -1,7 +1,7 @@
 ﻿@page "/HolidayViewer/{ViewerTypeId:int}"
 
 @using System.Net.Http.Json
-@inject HttpClient httpClient
+@inject IHolidaysClient HolidaysClient
 
 <MudContainer Class="mt-16">
     <LoadingContainerComponent State="_loadingState">
@@ -52,7 +52,6 @@
 
     ViewerType _viewerType => (ViewerType)ViewerTypeId;
 
-
     LoadingState _loadingState = LoadingState.Loading;
     string _errorMessage = string.Empty;
 
@@ -66,13 +65,10 @@
 
         try
         {
-            var date = DateTime.Now.Date.ToString("yyyy-MM-dd");
-            var result = await httpClient.GetFromJsonAsync<HolidayListResult>($"api/holidays/{date}");
+            var result = await HolidaysClient.GetHolidaysAsync(DateTime.Now.Date);
             _holidayDate = result.Date;
             _count = result.Count;
             _holidays = result.Holidays;
-
-            //throw new ArgumentException("Parameter cannot be null", nameof(date));
 
             _loadingState = LoadingState.Loaded;
         }
